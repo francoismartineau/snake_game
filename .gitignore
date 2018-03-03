@@ -1,3 +1,4 @@
 *.exe 
 build/*
 libs/*
+cmakelists.txt
