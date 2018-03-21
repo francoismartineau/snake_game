@@ -1,7 +1,7 @@
 /*
  * \file Partie.h
  * \date Oct 27, 2017
- * \author François Martineau
+ * \author Francois Martineau
  */
 
 #ifndef PARTIE_H_
@@ -17,7 +17,7 @@
 class Partie{
 public:
     Partie(const int & width = 70, const int & height = 50);
-
+    ~Partie();
 private:
     bool collision();
     void mangePomme();

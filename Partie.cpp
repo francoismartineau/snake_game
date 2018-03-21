@@ -1,7 +1,7 @@
 /*
  * \file Partie.cpp
  * \date Oct 27, 2017
- * \author François Martineau
+ * \author Francois Martineau
  */
 #include "Partie.h"
 #include "Utility.h"
@@ -15,7 +15,7 @@ Partie::Partie(const int & width, const int & height) :m_width(width), m_height(
     placeApple();
 
 
-    m_speed = 1; //une vitesse supérieure à 1 n'est pas encore bien supportée
+    m_speed = 1; //une vitesse supï¿½rieure ï¿½ 1 n'est pas encore bien supportï¿½e
     m_growSpeed = 1;
     m_direction = (Direction)(rand() % 4);
 
@@ -26,6 +26,12 @@ Partie::Partie(const int & width, const int & height) :m_width(width), m_height(
             mangePomme();
         draw();
     }
+}
+
+Partie::~Partie(){
+  delete m_apple;
+  delete m_wall;
+  delete m_snake;
 }
 
 void Partie::keyInput(){
