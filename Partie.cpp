@@ -15,7 +15,7 @@ Partie::Partie(const int & width, const int & height) :m_width(width), m_height(
     placeApple();
 
 
-    m_speed = 1; //une vitesse sup�rieure � 1 n'est pas encore bien support�e
+    m_speed = 1; //une vitesse superieure a 1 n'est pas encore bien support�e
     m_growSpeed = 1;
     m_direction = (Direction)(rand() % 4);
 
