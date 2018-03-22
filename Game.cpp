@@ -1,14 +1,14 @@
 /*
- * \file Partie.cpp
+ * \file Game.cpp
  * \date Oct 27, 2017
  * \author Francois Martineau
  */
-#include "Partie.h"
+#include "Game.h"
 #include "Utility.h"
 #include <conio.h>
 #include "Windows.h"
 
-Partie::Partie(const int & width, const int & height) :m_width(width), m_height(height){
+Game::Game(const int & width, const int & height) :m_width(width), m_height(height){
     m_snake = new Snake(width/2, height/2, 10);
     m_wall = new Wall(m_width, m_height);
     m_apple = new Apple();
@@ -28,13 +28,13 @@ Partie::Partie(const int & width, const int & height) :m_width(width), m_height(
     }
 }
 
-Partie::~Partie(){
+Game::~Game(){
   delete m_apple;
   delete m_wall;
   delete m_snake;
 }
 
-void Partie::keyInput(){
+void Game::keyInput(){
     char p_up = 'i';
     char p_left = 'j';
     char p_down = 'k';
@@ -53,7 +53,7 @@ void Partie::keyInput(){
     }
 }
 
-bool Partie::collision(){
+bool Game::collision(){
     const Position * headPos = & m_snake->getPiecePos(0);
     const int * wallPieceNb = & m_wall->getWallPieceNb();
     for(int i = 0; i < * wallPieceNb; i++){
@@ -74,7 +74,7 @@ bool Partie::collision(){
     return false;
 }
 
-void Partie::mangePomme(){
+void Game::mangePomme(){
     const Position * headPos = & m_snake->getPiecePos(0);
     const Position * applePos = & m_apple->getPosition();
     if(*headPos == *applePos){
@@ -83,7 +83,7 @@ void Partie::mangePomme(){
     }
 }
 
-void Partie::placeApple(){
+void Game::placeApple(){
     Position applePos;
     bool validPos = false;
     const unsigned int * snakeLenght = & m_snake->getLenght();

@@ -4,10 +4,10 @@
  * \author François Martineau
  */
 #include <iostream>
-#include "Partie.h"
+#include "Game.h"
 
-int main() {
-    Partie partie(50,20);
+int main()
+{
+    Game game(50,20);
     return 0;
 }
-

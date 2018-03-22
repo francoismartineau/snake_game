@@ -1,12 +1,12 @@
 /*
- * \file PartieDraw.cpp
+ * \file GameDraw.cpp
  * \date Oct 27, 2017
  * \author François Martineau
  */
-#include "Partie.h"
+#include "Game.h"
 #include <sstream>
 
-void Partie::draw() const{
+void Game::draw() const{
     system("cls");
     for(int y = 0; y < m_height; y++ ){
         for(int x = 0; x < m_width; x++){
@@ -20,10 +20,10 @@ void Partie::draw() const{
         }
         std::cout << '\n';
     }
-    std::cout << "SNAKE!\n";
+    std::cout << "CONTROLS: I J K L\n";
 }
 
-bool Partie::drawSnake(const int & x, const int & y) const{
+bool Game::drawSnake(const int & x, const int & y) const{
     bool drewSnake = false;
     const unsigned int * snakeLenght = & m_snake->getLenght();
     for(unsigned int i = 0; i < (*snakeLenght) - 1; i++){
@@ -37,7 +37,7 @@ bool Partie::drawSnake(const int & x, const int & y) const{
     return drewSnake;
 }
 
-bool Partie::drawWall(const int & x, const int & y) const{
+bool Game::drawWall(const int & x, const int & y) const{
     bool drewWall = false;
     const int * wallPieceNb = & m_wall->getWallPieceNb();
     for(int i = 0; i < * wallPieceNb; i++){
@@ -50,7 +50,7 @@ bool Partie::drawWall(const int & x, const int & y) const{
     return drewWall;
 }
 
-bool Partie::drawApple(const int & x, const int & y) const {
+bool Game::drawApple(const int & x, const int & y) const {
     bool drewApple = false;
     const Position * applePos = & m_apple->getPosition();
     if(x == applePos->x and y == applePos->y){
@@ -61,7 +61,7 @@ bool Partie::drawApple(const int & x, const int & y) const {
 
 }
 
-void Partie::drawPixel(Texture texture) const{
+void Game::drawPixel(Texture texture) const{
     std::cout << (char)texture;
 
 }

@@ -1,11 +1,11 @@
 /*
- * \file Partie.h
+ * \file Game.h
  * \date Oct 27, 2017
  * \author Francois Martineau
  */
 
-#ifndef PARTIE_H_
-#define PARTIE_H_
+#ifndef GAME_H_
+#define GAME_H_
 
 #include <iostream>
 #include <string>
@@ -14,10 +14,10 @@
 #include "Apple.h"
 
 
-class Partie{
+class Game{
 public:
-    Partie(const int & width = 70, const int & height = 50);
-    ~Partie();
+    Game(const int & width = 70, const int & height = 50);
+    ~Game();
 private:
     bool collision();
     void mangePomme();
@@ -41,4 +41,4 @@ private:
 
 
 
-#endif /* PARTIE_H_ */
+#endif /* GAME_H_ */
