@@ -3,4 +3,4 @@ The goal here was just to implement the logic behind the game snake. Graphical e
 ![alt text](https://i.postimg.cc/HnZ7v0MQ/infinite-game.gif)
 
 
-![alt text](https://i.imgur.com/jDwq1Bb.gif)
+<!-- ![alt text](https://i.imgur.com/jDwq1Bb.gif) -->
