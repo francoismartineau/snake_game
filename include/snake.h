@@ -9,27 +9,29 @@
 
 class Snake {
 public:
-    Snake(const int & x, const int & y, int length, const Direction & dir);
-    void reset();
-    bool overlap(Position pos);
-    const Position & getBlocPos(const int & index) const;
+    Snake(size_t x, size_t y, size_t length, const Direction & dir);
+    void reset(size_t w, size_t h);
+    bool overlap(Position pos) const; 
+    const Position & getBlocPos(size_t index) const;
     const Position & getHeadPos() const;
-    const unsigned int & getLength() const;
-    void grow(const int & size);
+    size_t getLength() const;
+    void grow(size_t size);
     void move();
-    void move(const Direction & dir);
+    void move(Direction dir);
     void setDir(const Direction & dir);
     friend std::ostream & operator<<(std::ostream & os, const Snake & sn);
-    Direction dir;
-    int speed;
 
 private:
-    int oriX;
-    int oriY;
-    int oriLength;
+    size_t oriX;
+    size_t oriY;
+    size_t oriLength;
     Direction oriDir;
+public:
+    Direction dir;
+    int speed;
+private:
     std::vector <Position> blocs;
-    unsigned int length;
+    size_t length;
 };
 
 

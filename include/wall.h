@@ -2,21 +2,27 @@
 #define WALL_H_
 
 #include <vector>
+#include <string>
 #include "define.h"
 
 class Wall
 {
 public:
-    Wall(const int & width, const int & height);
-    const Position & getBlocPos(const int & index) const;
-    const int & getBlocQty() const;
-    int width;
-    int height;
+    Wall(std::string path);
+    Wall(size_t width, size_t height);
+    const Position & getBlocPos(size_t index) const;
+    size_t getBlocQty() const;
+    bool overlap(Position pos) const;
+    size_t width;
+    size_t height;
+    size_t getLength() const;
 
 private:
-    void addBloc(const int & x, const int & y);
+    void getSize(std::string txt);
+    void addBloc(Position pos);
+    void addBloc(size_t x, size_t y);
     std::vector <Position> blocs;
-    int blocQty;
+    size_t blocQty;
 };
 
 

@@ -1,7 +1,10 @@
 *.o
 *.exe
 
+.vscode/
 build/*
 libs/*
 cmakelists.txt
-presentation.gif
+*.gif
+_notes*
+test*
