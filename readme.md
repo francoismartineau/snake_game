@@ -14,4 +14,7 @@ A map is a text file containing spaces and '#' like shown in the game. This map 
 
 ![alt text](https://i.postimg.cc/wTHSvbZV/dijkstra-map2.gif)
 
+This map has no walls, letting the snake more options to survive.
+
+![alt text](https://i.postimg.cc/xdRXwZw4/dijkstra-map-vide.gif)
 <!-- ![alt text](https://i.imgur.com/jDwq1Bb.gif) -->

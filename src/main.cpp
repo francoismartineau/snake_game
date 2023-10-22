@@ -27,9 +27,9 @@ Graph *createGraph(Wall *wall)
 }
 
 
-int main()
+int main(int argc, char **argv)
 {
-    Wall *wall = new Wall("walls/d.txt");
+    Wall *wall = new Wall(argv[1]);
     Graph *graph = createGraph(wall);
     Snake *snake = new Snake(2, wall->height-2, 2, RIGHT);
     std::cout << "Game start..." << std::endl;
