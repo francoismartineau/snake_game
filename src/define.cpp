@@ -24,9 +24,9 @@ Position::Position(const Position &pos)
 }
 
 
-bool Position::operator==(const Position & pos) const
+bool Position::operator==(Position pos) const
 {
-    return (x == pos.x and y == pos.y);
+    return (this->x == pos.x && this->y == pos.y);
 }
 
 std::ostream & operator<<(std::ostream & os, const Position & pos)
@@ -50,7 +50,7 @@ void Position::move(const Direction & dir, size_t speed)
             this->y -= speed;
         else
             this->y = this->h - (speed - this->y);        
-        break;
+        break; 
     case RIGHT:
         this->x += speed;
         this->x %= this->w;

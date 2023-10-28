@@ -27,7 +27,7 @@ struct Position
     size_t y;
     static size_t w;
     static size_t h;
-    bool operator==(const Position & pos) const;
+    bool operator==(Position pos) const;
     friend std::ostream & operator<<(std::ostream & os, const Position & pos);
     void move(const Direction & dir, size_t speed);
     void teleport();

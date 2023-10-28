@@ -132,7 +132,8 @@ unsigned int Graph::plusCourtChemin(size_t p_origine, size_t p_destination, vect
     }
 
     // Initialisation des conteneurs
-    size_t queue_size = 9360;
+    // std::cout << this->getQueueSize() << std::endl;
+    size_t queue_size = MAX_LENGTH;//la somme du poids des arcs//;MAX_LENGTH;
     list<size_t> queue[queue_size];
     queue[0].push_front(p_origine);
     size_t lowerBound = 0;
@@ -158,6 +159,17 @@ unsigned int Graph::plusCourtChemin(size_t p_origine, size_t p_destination, vect
         relaxation(current, queue, distance, predecesseur, maxDistEverSeen);
     }
 }
+
+// size_t Graph::getQueueSize() const
+// {
+//     size_t size = 0;
+
+//     for (const std::list<Arc>& arcList : m_listesAdj)
+//         for (const Arc& arc : arcList)
+//             size += arc.weight;
+//     return size;
+// }
+
 
 
 //! \brief Cette méthode privée est appelée par plusCourtChemin et permet de créer le plus court

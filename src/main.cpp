@@ -29,6 +29,11 @@ Graph *createGraph(Wall *wall)
 
 int main(int argc, char **argv)
 {
+    if (argc != 2)
+    {
+        std::cout << "No wall file provided." << std::endl;
+        return 1;
+    }
     Wall *wall = new Wall(argv[1]);
     Graph *graph = createGraph(wall);
     Snake *snake = new Snake(2, wall->height-2, 2, RIGHT);

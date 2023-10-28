@@ -15,6 +15,8 @@
 #include <iostream>
 #include <algorithm>
 
+#define MAX_LENGTH 9360
+
 //! \brief  Classe pour graphes orientés pondérés (non négativement) avec listes d'adjacence
 class Graph
 {
@@ -45,7 +47,8 @@ private:
 
 
 	std::vector<std::list<Arc> > m_listesAdj; /*!< les listes d'adjacence */
-    unsigned long nbArcs;
+    // size_t getQueueSize() const;
+	unsigned long nbArcs;
     void makePath(const size_t& p_origine, const size_t& p_destination, const std::vector<size_t>& predecesseur, std::vector<size_t> &p_chemin) const;
 	void relaxation(const size_t& current, std::list<size_t> queue[], std::vector<unsigned int>& distance, std::vector<size_t>& predecesseur, unsigned int& maxDistEverSeen) const;
 };

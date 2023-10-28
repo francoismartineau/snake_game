@@ -4,6 +4,7 @@
 
 
 Wall::Wall(std::string path)
+    : blocQty(0)
 {
     std::ifstream file(path);
 
@@ -51,9 +52,8 @@ size_t Wall::getLength() const
 
 
 Wall::Wall(size_t width, size_t height)
-    : width(width), height(height)
+    : width(width), height(height), blocQty(0)
 {
-    this->blocQty = 0;
     for(size_t y = 0; y < height; y++){
         for(size_t x = 0; x < width; x++){
             if(y == 0 or y == height-1){

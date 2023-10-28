@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -O3 -Wall -Iinclude
+CXXFLAGS = -Wall -Iinclude
 CXXFLAGS += -MMD
 CXXFLAGS += -g
 

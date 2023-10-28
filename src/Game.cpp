@@ -158,12 +158,15 @@ void Game::tick(Direction dir)
 // si diff x ou diff y != speed, dir = reverse(dir)
 void Game::updateGraph()
 {
+    Position pos;
     for (size_t x = 0; x < this->wall->width; ++x)
     {
         for (size_t y = 0; y < this->wall->height; ++y)
         {
-            if (this->snake->overlap(Position(x, y))
-                || this->wall->overlap(Position(x, y)))
+            pos.x = x;
+            pos.y = y;
+            if (this->snake->overlap(pos)
+                || this->wall->overlap(pos))
                 this->removeArcsToNode(x, y);
             else
                 this->addArcsToNode(x, y);
