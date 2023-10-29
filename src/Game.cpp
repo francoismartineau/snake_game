@@ -5,8 +5,9 @@
 #include <algorithm>
 #include <random>
 #include <vector>
+#include <algorithm>
 #include <thread>
-#include "Game.h"
+#include "game.h"
 #include "apple.h"
 #include "define.h"
 
@@ -16,11 +17,13 @@ Game::Game(Wall *wall, Snake *snake, Graph *graph)
     graph(graph),
     apple(new Apple),
     speed(1),
-    growSpeed(1)
+    growSpeed(GROW_SPEED),
+    fps(FPS)
 {
     this->snake->reset(this->wall->width, this->wall->height);
     this->apple->place(this->wall, this->snake);
     dijkstraSnake();
+    // infiniteSnake();
     // userSnake();
 }
 
@@ -28,7 +31,6 @@ void Game::dijkstraSnake()
 {
     while (true)
     {
-        this->updateGraph();
         std::vector<size_t> path;
         size_t start = posToIndex(this->snake->getHeadPos(), this->wall->width);
         size_t goal = posToIndex(this->apple->pos, this->wall->width);
@@ -36,13 +38,64 @@ void Game::dijkstraSnake()
             != std::numeric_limits<unsigned int>::max());
         if (!goalInReach)
         {
-            this->tick(this->survive(this->snake->getHeadPos()));
+            // this->fps = 3;
+
+            Position eventualExit = getEventualExit(start);
+            std::cout << "eventualExit: " << eventualExit << std::endl;
+            getchar();
+            // move the furthest away from eventualExit
+
+            this->tick(getDirToBiggestRoom(getAvailableDirs()));
             continue ;
         }
+        else
+            this->fps = FPS;
         Position next_pos = indexToPos(path[1], this->wall->width);
         enum Direction dir = this->getDir(this->snake->getHeadPos(), next_pos);
         this->tick(dir);
     }
+}
+
+Position Game::getEventualExit(size_t start)
+{
+    size_t a = 0;
+    size_t b = 0;
+    size_t bodySegment;
+
+    for (size_t i = 0; i < this->snake->getLength(); ++i)
+    {
+        bodySegment = posToIndex(this->snake->getBlocPos(i), this->wall->width);
+        if (!this->graph->reachable(start, bodySegment))
+            break ;
+        else
+            a = i;
+    }
+    size_t lastSnakeBloc = posToIndex(this->snake->getBlocPos(this->snake->getLength() - 1), this->wall->width);
+    if (this->graph->reachable(start, lastSnakeBloc))
+    {
+        for (size_t i = this->snake->getLength() - 1; i >= 0; --i)
+        {
+            bodySegment = posToIndex(this->snake->getBlocPos(i), this->wall->width);
+            if (!this->graph->reachable(start, bodySegment))
+            {
+                b = i + 1;
+                break;
+            }
+        }
+    }
+    else
+    {
+        for (size_t i = this->snake->getLength() - 1; i >= 0; --i)
+        {
+            bodySegment = posToIndex(this->snake->getBlocPos(i), this->wall->width);
+            if (this->graph->reachable(start, bodySegment))
+            {
+                b = i;
+                break ;
+            }
+        }
+    }
+    return indexToPos(std::max(a, b), this->wall->width);
 }
 
 Direction Game::getDir(Position from, Position to)
@@ -76,6 +129,70 @@ void Game::userSnake()
         else
             this->tick(NONE);
     }
+}
+
+std::vector<Direction> Game::getAvailableDirs()
+{
+    std::vector<Direction> res;
+    Position snakeHead;
+    Position neighbor;
+    enum Direction dir;
+
+    for (dir = LEFT; dir != NONE; ++dir)
+    {
+        snakeHead = this->snake->getHeadPos();
+        neighbor = snakeHead.neighbor(dir, 1);
+        // std::cout << "snakeHead: " << snakeHead << std::endl;
+        // std::cout << "neighbor " << dir << ": " << neighbor << std::endl;            
+        if (this->graph->hasArc(posToIndex(snakeHead, this->wall->width),
+            posToIndex(neighbor, this->wall->width)))
+        {
+            res.push_back(dir);
+        }
+    }
+    return res;
+}
+
+size_t Game::getDirRoomSize(Direction dir)
+{
+    size_t res;
+
+    Snake temp = *(this->snake);
+    this->snake->move(dir);
+    this->updateGraph();
+    res = this->graph->areaSize(posToIndex(this->snake->getHeadPos(), this->wall->width));
+    *(this->snake) = temp;
+    this->updateGraph();
+    return res;
+}
+
+Direction Game::getDirToBiggestRoom(const std::vector<Direction> &dirs)
+{
+    std::vector<size_t> roomSizes(dirs.size());
+    size_t currRoom;
+    size_t maxRoom = 0;
+    Direction maxRoomDir = NONE;
+
+    for (size_t i = 0; i < dirs.size(); ++i)
+    {
+        currRoom = getDirRoomSize(dirs[i]);
+        std::cout << dirs[i] << ":" << currRoom << std::endl;
+        if (currRoom > maxRoom)
+        {
+            maxRoom = currRoom;
+            maxRoomDir = dirs[i];
+        }
+    }
+    return maxRoomDir;
+}
+
+bool Game::pathExists()
+{
+    std::vector<size_t> path;
+    return (this->graph->plusCourtChemin(
+        posToIndex(this->snake->getHeadPos(), this->wall->width),
+        posToIndex(this->apple->pos, this->wall->width), path)
+        != std::numeric_limits<unsigned int>::max());
 }
 
 void Game::infiniteSnake()
@@ -127,6 +244,12 @@ void Game::infiniteSnake()
     }
 }
 
+void Game::display()
+{
+    this->takeFrameTime();
+    this->draw();
+    this->fpsSync();   
+}
 void Game::tick()
 {
     this->tick(this->snake->dir);
@@ -135,7 +258,7 @@ void Game::tick()
 void Game::tick(Direction dir)
 {
     this->takeFrameTime();
-    std::cout << "dir: " << dir << std::endl;
+    // std::cout << "dir: " << dir << std::endl;
     this->snake->move(dir); 
     this->updateGraph();
     if (collision())
@@ -167,9 +290,15 @@ void Game::updateGraph()
             pos.y = y;
             if (this->snake->overlap(pos)
                 || this->wall->overlap(pos))
+            {
                 this->removeArcsToNode(x, y);
+                this->graph->setIsOccupied(posToIndex(pos, this->wall->width), true);
+            }   
             else
+            {
                 this->addArcsToNode(x, y);
+                this->graph->setIsOccupied(posToIndex(pos, this->wall->width), false);
+            }
         }
     }
 }
@@ -189,10 +318,6 @@ void Game::addArcsToNode(size_t x, size_t y)
             adjacent_x = 0;
         else if (adjacent_y == this->wall->height)
             adjacent_y = 0;
-        // bool outOfBounds = (adjacent_x <= 0 || adjacent_x >= this->wall->width - 1
-        //     || adjacent_y <= 0 || adjacent_y >= this->wall->height - 1);
-        // if (outOfBounds)
-        //     continue;
         size_t thisNode = coordToIndex(x, y, this->wall->width);
         size_t adjacentNode = coordToIndex(adjacent_x, adjacent_y, this->wall->width);
         this->graph->ajouterArc(adjacentNode, thisNode, 1);
@@ -284,7 +409,7 @@ bool Game::collision()
 void Game::collide()
 {
     std::cout << "Collision!" << std::endl;
-    Sleep(3000);
+    Sleep(COLLIDE_TIME * 1000);
     this->snake->reset(this->wall->width, this->wall->height);
     this->apple->place(this->wall, this->snake);    
 }

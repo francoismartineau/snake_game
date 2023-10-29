@@ -1,2 +1,2 @@
-obj/GameDraw.o: src/GameDraw.cpp include/Game.h include/snake.h \
+obj/gameDraw.o: src/gameDraw.cpp include/game.h include/snake.h \
  include/define.h include/wall.h include/apple.h include/graph.h

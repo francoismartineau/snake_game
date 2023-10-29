@@ -1,6 +1,6 @@
 #include <sstream>
 #include <thread>
-#include "Game.h"
+#include "game.h"
 
 void Game::draw() const{
     system("cls");
@@ -68,7 +68,7 @@ void Game::fpsSync()
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - this->frameTime);
     int sleepTimeMs = std::max(
         0, 
-        int(1.0 / FPS * 1000) - static_cast<int>(duration.count())
+        int(1.0 / this->fps * 1000) - static_cast<int>(duration.count())
     );
     std::this_thread::sleep_for(std::chrono::milliseconds(sleepTimeMs));
 }

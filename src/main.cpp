@@ -1,13 +1,12 @@
 #include <iostream>
-#include "Game.h"
+#include "game.h"
 #include "graph.h"
 
 Graph *createGraph(Wall *wall)
 {
-    Graph *graph;
+    Graph *graph = new Graph(wall->width * wall->height, wall->width);
     size_t i;
 
-    graph = new Graph(wall->width * wall->height);
     for (size_t x = 0; x < wall->width; ++x)
     {
         for (size_t y = 0; y < wall->height; ++y)
@@ -25,7 +24,6 @@ Graph *createGraph(Wall *wall)
     }
     return graph;
 }
-
 
 int main(int argc, char **argv)
 {

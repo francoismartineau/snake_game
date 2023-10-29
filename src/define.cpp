@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "define.h"
 
 size_t Position::w = 0;
@@ -29,13 +30,22 @@ bool Position::operator==(Position pos) const
     return (this->x == pos.x && this->y == pos.y);
 }
 
-std::ostream & operator<<(std::ostream & os, const Position & pos)
+std::ostream &operator<<(std::ostream &os, const std::vector<Direction> &dirs)
+{
+    for (const Direction& dir : dirs) {
+        os << dir << " ";
+    }
+    return os;
+}
+
+
+std::ostream &operator<<(std::ostream & os, const Position & pos)
 {
     os << "[" << pos.x << ", " << pos.y << "]";
     return os;
 }
 
-void Position::move(const Direction & dir, size_t speed)
+Position Position::move(const Direction & dir, size_t speed)
 {
     switch (dir)
     {
@@ -62,7 +72,39 @@ void Position::move(const Direction & dir, size_t speed)
     default:
         break;
     }
+    return *this;
+}
 
+Position Position::neighbor(const Direction & dir, size_t speed)
+{
+    Position res = *this;
+
+    switch (dir)
+    {
+    case LEFT:
+        if (speed <= res.x)
+            res.x -= speed;
+        else
+            res.x = res.w - (speed - res.x);
+        break;
+    case UP:
+        if (speed <= res.y)
+            res.y -= speed;
+        else
+            res.y = res.h - (speed - res.y);        
+        break; 
+    case RIGHT:
+        res.x += speed;
+        res.x %= res.w;
+        break;
+    case DOWN:
+        res.y += speed;
+        res.y %= res.h;
+        break;
+    default:
+        break;
+    }
+    return res;   
 }
 
 std::ostream & operator<<(std::ostream & os, Direction dir)
@@ -127,3 +169,20 @@ size_t posToIndex(Position pos, size_t width)
     return coordToIndex(pos.x, pos.y, width);
 }
 
+Direction& operator++(Direction& d)
+{
+    switch(d)
+    {
+        case Direction::LEFT:
+            return d = Direction::UP;
+        case Direction::UP:
+            return d = Direction::RIGHT;
+        case Direction::RIGHT:
+            return d = Direction::DOWN;
+        case Direction::DOWN:
+            return d = Direction::NONE;
+        case Direction::NONE:
+        default:
+            return d = Direction::LEFT;
+    }
+}

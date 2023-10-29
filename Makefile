@@ -2,18 +2,21 @@ CXX = g++
 CXXFLAGS = -Wall -Iinclude
 CXXFLAGS += -MMD
 CXXFLAGS += -g
+# CXXFLAGS += -O3
 
 SRCDIR = src
 OBJDIR = obj
 SRCS = define.cpp \
-	apple.cpp Game.cpp GameDraw.cpp graph.cpp main.cpp snake.cpp util.cpp wall.cpp
+	apple.cpp game.cpp gameDraw.cpp graph.cpp main.cpp snake.cpp util.cpp wall.cpp
 SRCS := $(addprefix $(SRCDIR)/, $(SRCS))
 OBJS = $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
-OUT = bin\snake.exe
+OUTDIR = bin
+OUT = .\$(OUTDIR)\snake.exe
 
 all: $(OUT)
 
 $(OUT): $(OBJS)
+	@if not exist "$(OUTDIR)" mkdir $(OUTDIR)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
@@ -24,7 +27,7 @@ clean:
 	-rmdir /s /q $(OBJDIR) 2>NUL
 
 fclean: clean
-	-rm $(OUT) 2>NUL
+	-rmdir /s /q $(OUTDIR) 2>NUL
 
 re: fclean all
 

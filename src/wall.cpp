@@ -1,6 +1,7 @@
 #include <fstream>
 #include <sstream>
 #include "wall.h"
+#include "game.h"
 
 
 Wall::Wall(std::string path)

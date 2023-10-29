@@ -2,9 +2,7 @@
 #define UTILITY_H_
 
 #include <iostream>
-
-#define FPS 30.0
-#define WALLCHAR '#'
+#include <vector>
 
 enum Direction {
     LEFT = 0,
@@ -14,7 +12,11 @@ enum Direction {
     NONE = 4
 };
 
-std::ostream & operator<<(std::ostream & os, Direction dir);
+Direction& operator++(Direction& d);
+
+std::ostream &operator<<(std::ostream &os, Direction dir);
+std::ostream &operator<<(std::ostream &os, const std::vector<Direction> &dirs);
+
 
 Direction reverse(Direction dir);
 
@@ -29,7 +31,8 @@ struct Position
     static size_t h;
     bool operator==(Position pos) const;
     friend std::ostream & operator<<(std::ostream & os, const Position & pos);
-    void move(const Direction & dir, size_t speed);
+    Position move(const Direction & dir, size_t speed);
+    Position neighbor(const Direction & dir, size_t speed);
     void teleport();
 };
 
