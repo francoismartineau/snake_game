@@ -6,7 +6,7 @@ This is a snake game projected to the console.
 ![alt text](https://i.postimg.cc/HnZ7v0MQ/infinite-game.gif)
 
 
-Now it takes the shortest path using Dijkstra. The sides not blocked by walls teleports the snake Pac-man style.
+Now it takes the shortest path using Dijkstra. The sides that are not blocked by walls teleport the snake Pac-man style.
 
 ![alt text](https://i.postimg.cc/fydYXKPj/dijkstra.gif)
 
