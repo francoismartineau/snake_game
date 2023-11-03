@@ -10,7 +10,7 @@ Now it takes the shortest path using Dijkstra. The sides that are not blocked by
 
 ![alt text](https://i.postimg.cc/fydYXKPj/dijkstra.gif)
 
-A map is a text file containing spaces and '#' like shown in the game. This map is different.
+A map is a text file containing spaces and '#' like shown in the game. This map has more walls.
 
 ![alt text](https://i.postimg.cc/wTHSvbZV/dijkstra-map2.gif)
 
