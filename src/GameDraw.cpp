@@ -8,7 +8,8 @@ void Game::draw() const{
     {
         for (size_t x = 0; x < this->wall->width; x++)
         {
-            if(!drawWall(x, y)
+            if(!drawDebug(x, y)
+                && !drawWall(x, y)
                 && !drawApple(x, y)
                 && !drawSnake(x, y))
                 drawPixel(EMPTY);
@@ -16,6 +17,16 @@ void Game::draw() const{
         std::cout << '\n';
     }
     // std::cout << "CONTROLS: I J K L\n";
+}
+
+bool Game::drawDebug(size_t x, size_t y) const
+{
+    if (!this->debug.on) // || x != this->debug.pos.x || y != this->debug.pos.y)
+        return false;
+    if (!(Position(x, y) == debug.pos))
+        return false;
+    drawPixel(DEBUG);
+    return true;
 }
 
 bool Game::drawSnake(size_t x, size_t y) const
@@ -62,7 +73,7 @@ void Game::takeFrameTime()
     this->frameTime = std::chrono::high_resolution_clock::now();
 }
 
-void Game::fpsSync()
+void Game::fpsSync() const
 {
     auto endTime = std::chrono::high_resolution_clock::now();    // Record end time
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - this->frameTime);

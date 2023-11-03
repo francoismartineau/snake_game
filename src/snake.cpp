@@ -22,10 +22,9 @@ void Snake::reset(size_t w, size_t h)
 {
     Position pos(this->oriX, this->oriY);
     this->dir = this->oriDir;
-    this->length = this->oriLength;
     this->blocs.clear();
     this->blocs.push_back(pos);
-    for(size_t i = 1; i < this->length; ++i)
+    for(size_t i = 1; i < this->oriLength; ++i)
     {
         pos.move(reverse(this->dir), 1);
         this->blocs.push_back(pos);
@@ -34,7 +33,7 @@ void Snake::reset(size_t w, size_t h)
 
 bool Snake::overlap(Position pos) const
 {
-    for(size_t i = 0; i < this->length; i++)
+    for(size_t i = 0; i < this->getLength(); i++)
         if (pos == this->getBlocPos(i))
             return true;
     return false;
@@ -48,21 +47,29 @@ const Position & Snake::getBlocPos(size_t index) const
 
 size_t Snake::getLength() const
 {
-    return this->length;
+    return this->blocs.size();
 }
 
+/*
+    Est-ce que snake.size reste correct?
+    ////////////////////
+    ////////////////////
+    ////////////////////
+    ////////////////////
+    ////////////////////
+
+*/
 void Snake::grow(size_t growSize)
 {
     for(size_t i = 0; i < growSize; ++i)
         this->blocs.push_back(this->blocs.back());
-    this->length += growSize;
 }
 
 void Snake::move(Direction dir)
 {
     if (dir != NONE && dir != reverse(this->dir))
         this->dir = dir;
-    for(size_t i = this->length - 1 ; i > 0; i--)
+    for(size_t i = this->getLength() - 1 ; i > 0; i--)
         this->blocs[i] = this->blocs[i - 1];
     this->blocs[0].move(this->dir, this->speed);
 }

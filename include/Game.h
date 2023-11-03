@@ -5,6 +5,7 @@
 #include <string>
 #include <chrono>
 #include <vector>
+#include <deque>
 #include "snake.h"
 #include "wall.h"
 #include "apple.h"
@@ -20,48 +21,64 @@ class Game
 {
 public:
     Game(Wall *wall, Snake *snake, Graph *graph);
+    ~Game();
     Wall *wall;
     Snake  *snake;
     Graph *graph;
     Apple *apple;
-    ~Game();
 
 private:
-    void display();
+    void gameChoice();
     void tick();
     void tick(Direction dir);
     bool collision();
     void collide();
-    Direction keyInput();
+    
+    // --  Display / IO --
     void draw() const;
     bool drawSnake(size_t x, size_t y) const;
     bool drawWall(size_t x, size_t y) const;
     bool drawApple(size_t x, size_t y) const;
     void drawPixel(Texture texture) const;
+    bool drawDebug(size_t x, size_t y) const;
+    struct Debug
+    {
+        bool on;
+        Position pos;
+    };
+    Debug debug;
+    void freezeFrame();
+    void takeFrameTime();
+    void fpsSync() const;
+    std::chrono::time_point<std::chrono::high_resolution_clock> frameTime;
+    unsigned int fps;
+    Direction keyInput();
+
+    // -- graph --
     void updateGraph();
     void addArcsToNode(size_t x, size_t y);
     void removeArcsToNode(size_t x, size_t y);
-    Direction survive(Position headPos);
-    Direction getDir(Position from, Position to);
-    Position getEventualExit(size_t start);
-    void dijkstraSnake();
-    void userSnake();
-    std::vector<Direction> getAvailableDirs(void);
-    Direction getDirToBiggestRoom(const std::vector<Direction> &dirs);
-    size_t getDirRoomSize(Direction dir);
-    bool pathExists();
-    void infiniteSnake();
-    void takeFrameTime();
-    void fpsSync();
 
+    // -- dijkstra --
+    void dijkstraSnake();
+    void usePath(const std::deque<size_t> &path);
+    Direction solveExitPoint(size_t start);
+    Position getExitPoint(size_t start);
+    Direction avoidPosition(Position curr, Position avoid);
+    std::vector<Direction> dirsAvailable(void);
+    size_t dirRoomSize(Direction dir);
+    Direction dirToBiggestRoom(const std::vector<Direction> &dirs);
+    Direction dirToPos(Position from, Position to);
+
+    // ----
+    void userSnake(bool survive);
+    void infiniteSnake();
+    Direction survive(Direction dir);
+
+    // ----
     int speed;
     int growSpeed;
     Direction m_direction;
-    std::chrono::time_point<std::chrono::high_resolution_clock> frameTime;
-    unsigned int fps;
 };
-
-
-Direction getDir(Position from, Position to);
 
 #endif /* GAME_H_ */

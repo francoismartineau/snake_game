@@ -99,24 +99,21 @@ void Graph::setWeight(size_t i, size_t j, unsigned int weight)
     throw logic_error("Graph::getWeight(): l'arc(i,j) est inexistant");
 }
 
-unsigned int Graph::plusCourtChemin(size_t p_origine, size_t p_destination, vector<size_t> &p_chemin) const
+unsigned int Graph::plusCourtChemin(size_t start, size_t goal, deque<size_t> &path) const
 {
-    if (p_origine >= nodes.size() || p_destination >= nodes.size())
-        throw logic_error("Graph::dijkstra(): p_origine ou p_destination n'existe pas");
+    if (start >= nodes.size() || goal >= nodes.size())
+        throw logic_error("Graph::dijkstra(): start ou goal n'existe pas");
 
-    if (p_origine == p_destination)
-    {
-        p_chemin.push_back(p_destination);
+    if (start == goal)
         return 0;
-    }
 
     // Initialisation des conteneurs
     size_t queue_size = MAX_LENGTH;//la somme du poids des arcs//;MAX_LENGTH;
     list<size_t> queue[queue_size];
-    queue[0].push_front(p_origine);
+    queue[0].push_front(start);
     size_t lowerBound = 0;
     vector<unsigned int> distance(getNbSommets(), numeric_limits<unsigned int>::max());
-    distance[p_origine] = 0;
+    distance[start] = 0;
     vector<size_t> predecesseur(getNbSommets(), numeric_limits<size_t>::max());
     unsigned int maxDistEverSeen = 0;
     size_t current;
@@ -128,11 +125,10 @@ unsigned int Graph::plusCourtChemin(size_t p_origine, size_t p_destination, vect
             if (++lowerBound > maxDistEverSeen) return numeric_limits<unsigned int>::max();
         current = queue[lowerBound].front();
         queue[lowerBound].pop_front();
-
-        if (current == p_destination)
+        if (current == goal)
         {
-            makePath(p_origine, p_destination, predecesseur, p_chemin);
-            return distance[p_destination];
+            makePath(start, goal, predecesseur, path);
+            return distance[goal];
         }
         relaxation(current, queue, distance, predecesseur, maxDistEverSeen);
     }
@@ -149,17 +145,10 @@ unsigned int Graph::plusCourtChemin(size_t p_origine, size_t p_destination, vect
 // }
 
 
-
-void Graph::makePath(const size_t& p_origine, const size_t& p_destination, const vector<size_t>& predecesseur, vector<size_t> &p_chemin) const
+void Graph::makePath(const size_t& start, const size_t& goal, const vector<size_t>& predecesseur, deque<size_t> &path) const
 {
-    size_t current = p_destination;
-    p_chemin.push_back(current);
-    do
-    {
-        current = predecesseur[current];
-        p_chemin.push_back(current);
-    } while (current != p_origine);
-    reverse(p_chemin.begin(), p_chemin.end());
+    for (size_t current = goal; current != start; current = predecesseur[current])
+        path.push_front(current);
 }
 
 void Graph::relaxation(const size_t& current, list<size_t> queue[], vector<unsigned int>& distance, vector<size_t>& predecesseur, unsigned int& maxDistEverSeen) const
@@ -185,18 +174,19 @@ bool Graph::reachable(size_t ori, size_t goal)
 {
     Position goalPos = indexToPos(goal, this->width);
     bool res = false;
-    std::vector<Direction> directions = {LEFT, UP, RIGHT, DOWN};
+    std::vector<Direction> directions = {LEFT, UP, RIGHT, DOWN, LEFT_UP, RIGHT_UP , RIGHT_DOWN, LEFT_DOWN};
     for (auto dir: directions)
     {
-        std::vector<bool> visited(nodes.size(), false);
         Position neighbor = goalPos.neighbor(dir, 1);
         size_t currGoal = posToIndex(neighbor, this->width);
-        if (nodes[currGoal].occupied)
+        if (currGoal < nodes.size()
+            && nodes[currGoal].occupied)
             continue;
+        std::vector<bool> visited(nodes.size(), false);
         _reachable(ori, currGoal, &res, visited);
         if (res)
             break;
-    }    
+    }
     return res;
 }
 

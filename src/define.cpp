@@ -6,22 +6,25 @@ size_t Position::w = 0;
 size_t Position::h = 0;
 
 Position::Position()
+    :x(0), y(0)
 {
-    this->x = 0;
-    this->y = 0;  
 }
 
 
 Position::Position(size_t x, size_t y)
+    :x(x), y(y)
 {
-    this->x = x;
-    this->y = y;
 }
 
 Position::Position(const Position &pos)
+    :x(pos.x), y(pos.y)
 {
-    this->x = pos.x;
-    this->y = pos.y;
+}
+
+
+bool Position::operator!=(Position pos) const
+{
+    return !(*this == pos);
 }
 
 
@@ -101,6 +104,18 @@ Position Position::neighbor(const Direction & dir, size_t speed)
         res.y += speed;
         res.y %= res.h;
         break;
+    case LEFT_DOWN:
+        res = res.neighbor(LEFT, speed).neighbor(DOWN, speed);
+        break;    
+    case LEFT_UP:
+        res = res.neighbor(LEFT, speed).neighbor(UP, speed);
+        break;    
+    case RIGHT_DOWN:
+        res = res.neighbor(RIGHT, speed).neighbor(DOWN, speed);
+        break;    
+    case RIGHT_UP:
+        res = res.neighbor(RIGHT, speed).neighbor(UP, speed);
+        break;    
     default:
         break;
     }

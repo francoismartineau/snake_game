@@ -9,7 +9,11 @@ enum Direction {
     UP = 1,
     RIGHT = 2,
     DOWN = 3,
-    NONE = 4
+    NONE = 4,
+    LEFT_UP = 5,
+    RIGHT_UP = 6,
+    LEFT_DOWN = 7,
+    RIGHT_DOWN = 8
 };
 
 Direction& operator++(Direction& d);
@@ -30,6 +34,7 @@ struct Position
     static size_t w;
     static size_t h;
     bool operator==(Position pos) const;
+    bool operator!=(Position pos) const;
     friend std::ostream & operator<<(std::ostream & os, const Position & pos);
     Position move(const Direction & dir, size_t speed);
     Position neighbor(const Direction & dir, size_t speed);
@@ -41,7 +46,8 @@ enum Texture {
     SNAKE_HEAD = '-',
     WALL = '#',
     APPLE = 'O',
-    EMPTY = ' '
+    EMPTY = ' ',
+    DEBUG = 'X'
 };
 
 size_t coordToIndex(size_t x, size_t y, size_t width);
