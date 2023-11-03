@@ -20,6 +20,6 @@ This map has no walls, letting the snake more options to survive.
 <!-- ![alt text](https://i.imgur.com/jDwq1Bb.gif) -->
 
 
-A user started playing in invicible mode and stopped when the auto-survival made this loop.
+A user started playing in invicible mode and stopped when this loop emerged from the auto surviving.
 
 ![alt text](https://i.postimg.cc/rF7xN6qS/user-invicible.gif)
