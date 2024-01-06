@@ -2,7 +2,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "game.h"
-#include "graph.h"
+#include "graphDijkstra.h"
 
 
 void composeGraph(Graph &graph, const Wall &wall)

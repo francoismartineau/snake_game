@@ -49,7 +49,6 @@ public:
 	std::vector<Node> nodes;
 	
 private:
-	// std::vector<std::list<Edge> > m_listesAdj; /*!< les listes d'adjacence */
     size_t maxPathLength() const;
 	unsigned long edgesQty;
     void makePath(const size_t& start, const size_t& goal, const std::vector<size_t>& predecessor, std::deque<size_t> &path) const;

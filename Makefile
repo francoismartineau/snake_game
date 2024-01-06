@@ -15,6 +15,9 @@ OUT = .\$(OUTDIR)\snake.exe
 
 all: $(OUT)
 
+run: all
+	$(OUT) walls\b.txt
+
 $(OUT): $(OBJS)
 	@if not exist "$(OUTDIR)" mkdir $(OUTDIR)
 	$(CXX) $(CXXFLAGS) $^ -o $@

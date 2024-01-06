@@ -5,7 +5,7 @@
 #include "util.h"
 
 void Game::draw() const{
-    // system("cls");
+    system("cls");
 
     // if (draw to file):
     // if (this->drawToFile)

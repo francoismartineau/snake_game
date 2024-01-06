@@ -1,11 +1,4 @@
-//
-//  Graph.cpp
-//  Classe pour graphs orientés pondérés (non négativement) avec listes d'adjacence
-//
-//  Mario Marchand automne 2016.
-//
-
-#include "graph.h"
+#include "graphDijkstra.h"
 
 using namespace std;
 
@@ -33,9 +26,9 @@ size_t Graph::getEdgesQty() const
 void Graph::addEdge(size_t i, size_t j, unsigned int weight)
 {
     if (i >= nodes.size())
-        throw logic_error("Graph::addEdge(): tentative d'ajouter l'edge(i,j) avec un sommet i inexistant");
+        throw logic_error("Graph::addEdge(): index i isn't an existing node.");
     if (j >= nodes.size())
-        throw logic_error("Graph::addEdge(): tentative d'ajouter l'edge(i,j) avec un sommet j inexistant");
+        throw logic_error("Graph::addEdge(): index j isn't an existing node.");
     if (!this->hasEdge(i, j))
         nodes[i].edges.emplace_back(Edge(j, weight));
     ++edgesQty;
@@ -50,9 +43,9 @@ bool Graph::hasEdge(size_t i, size_t j)
 void Graph::removeEdge(size_t i, size_t j)
 {
     if (i >= nodes.size())
-        throw logic_error("Graph::removeEdge(): tentative d'enlever l'edge(i,j) avec un sommet i inexistant");
+        throw logic_error("Graph::removeEdge(): index i isn't an existing node.");
     if (j >= nodes.size())
-        throw logic_error("Graph::removeEdge(): tentative d'enlever l'edge(i,j) avec un sommet j inexistant");
+        throw logic_error("Graph::removeEdge(): index j isn't an existing node.");
     auto &liste = nodes[i].edges;
     bool arc_enleve = false;
     for (auto itr = liste.end(); itr != liste.begin();) //on débute par la fin par choix
@@ -76,13 +69,13 @@ void Graph::setIsOccupied(size_t i, bool occupied)
 
 unsigned int Graph::getWeight(size_t i, size_t j) const
 {
-    if (i >= nodes.size()) throw logic_error("Graph::getWeight(): l'incice i n,est pas un sommet existant");
+    if (i >= nodes.size()) throw logic_error("Graph::getWeight(): index i isn't an existing node.");
     for (auto & edge : nodes[i].edges)
     {
         if (edge.destination == j)
             return edge.weight;
     }
-    throw logic_error("Graph::getWeight(): l'edge(i,j) est inexistant");
+    throw logic_error("Graph::getWeight(): edge(i,j) doesn't exist");
 }
 
 void Graph::setWeight(size_t i, size_t j, unsigned int weight)

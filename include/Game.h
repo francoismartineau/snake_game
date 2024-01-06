@@ -11,7 +11,7 @@
 #include "snake.h"
 #include "wall.h"
 #include "apple.h"
-#include "graph.h"
+#include "graphDijkstra.h"
 #include "define.h"
 
 #define FPS 30.0

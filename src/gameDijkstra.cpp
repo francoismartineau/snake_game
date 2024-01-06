@@ -40,7 +40,7 @@ void Game::usePath(const std::deque<size_t> &path)
 
     std::cout << "curr_pos: " << this->snake->getHeadPos() << std::endl;
 	// for (size_t i = 0; i < path.size(); ++i)
-	for (size_t i = 0; i < 2; ++i)
+	for (size_t i = 0; i < 1; ++i)
 	{
 		Position next_pos = indexToPos(path[i], this->wall->width);
 		dir = this->dirToPos(this->snake->getHeadPos(), next_pos);
@@ -49,7 +49,7 @@ void Game::usePath(const std::deque<size_t> &path)
             << "available dirs: " << this->dirsAvailable(this->snake->getHeadPos()) << std::endl 
             << " dir: " << dir << std::endl
             << "next_pos: " << next_pos << std::endl;        
-        waitForEnterKey();
+        // waitForEnterKey();
 		this->tick(dir);
 	}
 	// std::cout << "goal reached" << std::endl;
