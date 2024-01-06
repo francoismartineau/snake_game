@@ -1,11 +1,32 @@
 #include <sstream>
+#include <iomanip>
 #include <thread>
 #include "game.h"
+#include "util.h"
 
 void Game::draw() const{
-    system("cls");
+    // system("cls");
+
+    // if (draw to file):
+    // if (this->drawToFile)
+    //      create this->logFile, increment file name number
+        // this->drawFile = createFile("log", ".txt");
+
+
+    // drawPixel: if (draw to file): draw to file 
+    // ...
+    // if (draw to file): 
+    //      close file
+    std::cout << " ";
+    for (size_t x = 0; x < this->wall->width; x++)
+    {
+        std::cout << x % 10;
+    }
+    std::cout << "\n";
     for (size_t y = 0; y < this->wall->height; y++)
     {
+
+        std::cout << y % 10;
         for (size_t x = 0; x < this->wall->width; x++)
         {
             if(!drawDebug(x, y)
@@ -16,7 +37,6 @@ void Game::draw() const{
         }
         std::cout << '\n';
     }
-    // std::cout << "CONTROLS: I J K L\n";
 }
 
 bool Game::drawDebug(size_t x, size_t y) const

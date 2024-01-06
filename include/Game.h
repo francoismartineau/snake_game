@@ -6,6 +6,8 @@
 #include <chrono>
 #include <vector>
 #include <deque>
+#include <fstream>
+#include <sstream>
 #include "snake.h"
 #include "wall.h"
 #include "apple.h"
@@ -47,12 +49,15 @@ private:
         Position pos;
     };
     Debug debug;
+    bool drawToFile;
+    std::ofstream drawFile;
     void freezeFrame();
     void takeFrameTime();
     void fpsSync() const;
     std::chrono::time_point<std::chrono::high_resolution_clock> frameTime;
     unsigned int fps;
-    Direction keyInput();
+    void keyInput();
+    Direction inputDir;
 
     // -- graph --
     void updateGraph();
@@ -61,11 +66,12 @@ private:
 
     // -- dijkstra --
     void dijkstraSnake();
+    bool dijkstraOn;
     void usePath(const std::deque<size_t> &path);
     Direction solveExitPoint(size_t start);
     Position getExitPoint(size_t start);
     Direction avoidPosition(Position curr, Position avoid);
-    std::vector<Direction> dirsAvailable(void);
+    std::vector<Direction> dirsAvailable(Position pos);
     size_t dirRoomSize(Direction dir);
     Direction dirToBiggestRoom(const std::vector<Direction> &dirs);
     Direction dirToPos(Position from, Position to);
@@ -79,6 +85,10 @@ private:
     int speed;
     int growSpeed;
     Direction m_direction;
+
+    // -- debug --
+    void inspectWall(void);
+    void inspectGraph(void);
 };
 
 #endif /* GAME_H_ */

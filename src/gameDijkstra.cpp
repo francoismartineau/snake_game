@@ -1,17 +1,28 @@
-#include "game.h"
 #include <windows.h>
+#include <conio.h>
+#include "game.h"
+#include "util.h"
 
 void Game::dijkstraSnake()
 {
 
+    this->draw();
     while (true)
     {
+        if(_kbhit())
+            this->keyInput();
+        if (!this->dijkstraOn)
+        {
+            this->tick(this->survive(this->snake->dir));
+            continue;
+        }
         size_t start = posToIndex(this->snake->getHeadPos(), this->wall->width);
         size_t goal = posToIndex(this->apple->pos, this->wall->width);
 		std::deque<size_t> path;
-        bool pathExists = this->graph->plusCourtChemin(start, goal, path) != std::numeric_limits<unsigned int>::max();
+        bool pathExists = this->graph->shortestPath(start, goal, path) != std::numeric_limits<unsigned int>::max();
         if (pathExists)
         {
+	        this->debug.on = false;
 			usePath(path);
         }
         else
@@ -24,19 +35,25 @@ void Game::dijkstraSnake()
 
 void Game::usePath(const std::deque<size_t> &path)
 {
-	this->debug.on = false;
 	this->fps = FPS;
 	Direction dir;
 
-	for (size_t i = 0; i < path.size(); ++i)
+    std::cout << "curr_pos: " << this->snake->getHeadPos() << std::endl;
+	// for (size_t i = 0; i < path.size(); ++i)
+	for (size_t i = 0; i < 2; ++i)
 	{
 		Position next_pos = indexToPos(path[i], this->wall->width);
 		dir = this->dirToPos(this->snake->getHeadPos(), next_pos);
+		std::cout << "path index: " << i << std::endl
+            << "path[i]: " << path[i] << std::endl
+            << "available dirs: " << this->dirsAvailable(this->snake->getHeadPos()) << std::endl 
+            << " dir: " << dir << std::endl
+            << "next_pos: " << next_pos << std::endl;        
+        waitForEnterKey();
 		this->tick(dir);
-		std::cout << i << dir << std::endl;
 	}
-	std::cout << "goal reached" << std::endl;
-	Sleep(300);
+	// std::cout << "goal reached" << std::endl;
+	// Sleep(300);
 }
 
 Direction Game::solveExitPoint(size_t start)
@@ -46,7 +63,7 @@ Direction Game::solveExitPoint(size_t start)
 	this->debug.on = true;
 	this->debug.pos = exitPoint;
 	std::cout << exitPoint << std::endl;
-	std::vector<Direction> dirs = dirsAvailable();
+	std::vector<Direction> dirs = dirsAvailable(this->snake->getHeadPos());
 	Direction dir = dirToBiggestRoom(dirs);
 	if (dir == NONE)
 	{
@@ -105,20 +122,16 @@ Direction Game::avoidPosition(Position curr, Position avoid)
 }
 
 // -- directions --
-std::vector<Direction> Game::dirsAvailable()
+std::vector<Direction> Game::dirsAvailable(Position pos)
 {
     std::vector<Direction> res;
-    Position snakeHead;
     Position neighbor;
-    enum Direction dir;
 
-    for (dir = LEFT; dir != NONE; ++dir)
+    std::vector dirs = {LEFT, UP, RIGHT, DOWN};
+    for (const Direction dir: dirs)
     {
-        snakeHead = this->snake->getHeadPos();
-        neighbor = snakeHead.neighbor(dir, 1);
-        // std::cout << "snakeHead: " << snakeHead << std::endl;
-        // std::cout << "neighbor " << dir << ": " << neighbor << std::endl;            
-        if (this->graph->hasArc(posToIndex(snakeHead, this->wall->width),
+        neighbor = pos.neighbor(dir, 1);
+        if (this->graph->hasEdge(posToIndex(pos, this->wall->width),
             posToIndex(neighbor, this->wall->width)))
         {
             res.push_back(dir);

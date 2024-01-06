@@ -4,10 +4,9 @@
 #include <vector>
 #include "define.h"
 
-// template <typename T>
 void shuffleVector(std::vector<Direction> &vec);
-
-// template <typename T>
 void printVector(const std::vector<Direction>& vec);
+std::ofstream createFile(const std::string &baseFileName, const std::string &fileExtension);
+void waitForEnterKey();
 
 #endif /* UTIL_H_ */

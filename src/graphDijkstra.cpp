@@ -11,7 +11,7 @@ using namespace std;
 
 
 Graph::Graph(size_t p_nbSommets, size_t width)
-    : nodes(p_nbSommets), nbArcs(0), width(width)
+    : nodes(p_nbSommets), edgesQty(0), width(width)
 {
 }
 
@@ -20,39 +20,39 @@ void Graph::resize(size_t p_nouvelleTaille)
     nodes.resize(p_nouvelleTaille);
 }
 
-size_t Graph::getNbSommets() const
+size_t Graph::getNodesQty() const
 {
 	return nodes.size();
 }
 
-size_t Graph::getNbArcs() const
+size_t Graph::getEdgesQty() const
 {
-    return nbArcs;
+    return edgesQty;
 }
 
-void Graph::ajouterArc(size_t i, size_t j, unsigned int weight)
+void Graph::addEdge(size_t i, size_t j, unsigned int weight)
 {
     if (i >= nodes.size())
-        throw logic_error("Graph::ajouterArc(): tentative d'ajouter l'arc(i,j) avec un sommet i inexistant");
+        throw logic_error("Graph::addEdge(): tentative d'ajouter l'edge(i,j) avec un sommet i inexistant");
     if (j >= nodes.size())
-        throw logic_error("Graph::ajouterArc(): tentative d'ajouter l'arc(i,j) avec un sommet j inexistant");
-    if (!this->hasArc(i, j))
-        nodes[i].edges.emplace_back(Arc(j, weight));
-    ++nbArcs;
+        throw logic_error("Graph::addEdge(): tentative d'ajouter l'edge(i,j) avec un sommet j inexistant");
+    if (!this->hasEdge(i, j))
+        nodes[i].edges.emplace_back(Edge(j, weight));
+    ++edgesQty;
 }
 
-bool Graph::hasArc(size_t i, size_t j)
+bool Graph::hasEdge(size_t i, size_t j)
 {
-    auto it = std::find(nodes[i].edges.begin(), nodes[i].edges.end(), Arc(j, 0));
+    auto it = std::find(nodes[i].edges.begin(), nodes[i].edges.end(), Edge(j, 0));
     return it != nodes[i].edges.end();
 }
 
-void Graph::enleverArc(size_t i, size_t j)
+void Graph::removeEdge(size_t i, size_t j)
 {
     if (i >= nodes.size())
-        throw logic_error("Graph::enleverArc(): tentative d'enlever l'arc(i,j) avec un sommet i inexistant");
+        throw logic_error("Graph::removeEdge(): tentative d'enlever l'edge(i,j) avec un sommet i inexistant");
     if (j >= nodes.size())
-        throw logic_error("Graph::enleverArc(): tentative d'enlever l'arc(i,j) avec un sommet j inexistant");
+        throw logic_error("Graph::removeEdge(): tentative d'enlever l'edge(i,j) avec un sommet j inexistant");
     auto &liste = nodes[i].edges;
     bool arc_enleve = false;
     for (auto itr = liste.end(); itr != liste.begin();) //on débute par la fin par choix
@@ -65,7 +65,7 @@ void Graph::enleverArc(size_t i, size_t j)
         }
     }
     if (arc_enleve)
-        --nbArcs;
+        --edgesQty;
 }
 
 void Graph::setIsOccupied(size_t i, bool occupied)
@@ -77,48 +77,48 @@ void Graph::setIsOccupied(size_t i, bool occupied)
 unsigned int Graph::getWeight(size_t i, size_t j) const
 {
     if (i >= nodes.size()) throw logic_error("Graph::getWeight(): l'incice i n,est pas un sommet existant");
-    for (auto & arc : nodes[i].edges)
+    for (auto & edge : nodes[i].edges)
     {
-        if (arc.destination == j)
-            return arc.weight;
+        if (edge.destination == j)
+            return edge.weight;
     }
-    throw logic_error("Graph::getWeight(): l'arc(i,j) est inexistant");
+    throw logic_error("Graph::getWeight(): l'edge(i,j) est inexistant");
 }
 
 void Graph::setWeight(size_t i, size_t j, unsigned int weight)
 {
-    if (i >= nodes.size()) throw logic_error("Graph::getWeight(): l'incice i n,est pas un sommet existant");
-    for (auto & arc : nodes[i].edges)
+    if (i >= nodes.size()) throw logic_error("Graph::getWeight(): index i isn't an existing node.");
+    for (auto & edge : nodes[i].edges)
     {
-        if (arc.destination == j)
+        if (edge.destination == j)
         {
-            arc.weight = weight;
+            edge.weight = weight;
             return;
         }
     }
-    throw logic_error("Graph::getWeight(): l'arc(i,j) est inexistant");
+    throw logic_error("Graph::getWeight(): edge(i,j) doesn't exist");
 }
 
-unsigned int Graph::plusCourtChemin(size_t start, size_t goal, deque<size_t> &path) const
+unsigned int Graph::shortestPath(size_t start, size_t goal, deque<size_t> &path) const
 {
     if (start >= nodes.size() || goal >= nodes.size())
-        throw logic_error("Graph::dijkstra(): start ou goal n'existe pas");
+        throw logic_error("Graph::dijkstra(): start or goal doesn't exist");
 
     if (start == goal)
         return 0;
 
-    // Initialisation des conteneurs
-    size_t queue_size = MAX_LENGTH;//la somme du poids des arcs//;MAX_LENGTH;
+    // init
+    size_t queue_size = this->maxPathLength();
     list<size_t> queue[queue_size];
     queue[0].push_front(start);
     size_t lowerBound = 0;
-    vector<unsigned int> distance(getNbSommets(), numeric_limits<unsigned int>::max());
+    vector<unsigned int> distance(getNodesQty(), numeric_limits<unsigned int>::max());
     distance[start] = 0;
-    vector<size_t> predecesseur(getNbSommets(), numeric_limits<size_t>::max());
+    vector<size_t> predecessor(getNodesQty(), numeric_limits<size_t>::max());
     unsigned int maxDistEverSeen = 0;
     size_t current;
 
-    // Départ
+    // start
     while (true)
     {
         while (queue[lowerBound].size() == 0)
@@ -127,33 +127,35 @@ unsigned int Graph::plusCourtChemin(size_t start, size_t goal, deque<size_t> &pa
         queue[lowerBound].pop_front();
         if (current == goal)
         {
-            makePath(start, goal, predecesseur, path);
+            makePath(start, goal, predecessor, path);
             return distance[goal];
         }
-        relaxation(current, queue, distance, predecesseur, maxDistEverSeen);
+        relaxation(current, queue, distance, predecessor, maxDistEverSeen);
     }
 }
 
-// size_t Graph::getQueueSize() const
-// {
-//     size_t size = 0;
-
-//     for (const std::list<Arc>& arcList : m_listesAdj)
-//         for (const Arc& arc : arcList)
-//             size += arc.weight;
-//     return size;
-// }
 
 
-void Graph::makePath(const size_t& start, const size_t& goal, const vector<size_t>& predecesseur, deque<size_t> &path) const
+size_t Graph::maxPathLength() const
 {
-    for (size_t current = goal; current != start; current = predecesseur[current])
+    size_t len = 0;
+
+    for (const Node& node : nodes)
+        for (const Edge& edge : node.edges)
+            len += edge.weight;
+    return len;
+}
+
+
+void Graph::makePath(const size_t& start, const size_t& goal, const vector<size_t>& predecessor, deque<size_t> &path) const
+{
+    for (size_t current = goal; current != start; current = predecessor[current])
         path.push_front(current);
 }
 
-void Graph::relaxation(const size_t& current, list<size_t> queue[], vector<unsigned int>& distance, vector<size_t>& predecesseur, unsigned int& maxDistEverSeen) const
+void Graph::relaxation(const size_t& current, list<size_t> queue[], vector<unsigned int>& distance, vector<size_t>& predecessor, unsigned int& maxDistEverSeen) const
 {
-    for (const Arc& edge : nodes[current].edges)
+    for (const Edge& edge : nodes[current].edges)
     {
         const size_t& neighbor = edge.destination;
         unsigned int test_distance = distance[current] + edge.weight;
@@ -163,7 +165,7 @@ void Graph::relaxation(const size_t& current, list<size_t> queue[], vector<unsig
                 queue[distance[neighbor]].remove(neighbor);
             queue[test_distance].push_front(neighbor);
             distance[neighbor] = test_distance;
-            predecesseur[neighbor] = current;
+            predecessor[neighbor] = current;
             if (maxDistEverSeen < test_distance)
                 maxDistEverSeen = test_distance;
         }
@@ -230,12 +232,12 @@ size_t Graph::_areaSize(size_t ori, std::vector<bool> &visited)
 }
 
 
-Graph::Arc::Arc(size_t dest, unsigned int p)
+Graph::Edge::Edge(size_t dest, unsigned int p)
     : destination(dest), weight(p)
 {
 }
 
-bool Graph::Arc::operator==(const Arc& other) const
+bool Graph::Edge::operator==(const Edge& other) const
 {
 	return destination == other.destination;
 }

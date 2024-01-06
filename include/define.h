@@ -4,7 +4,10 @@
 #include <iostream>
 #include <vector>
 
-enum Direction {
+#define ENTER_KEY 13
+
+enum Direction
+{
     LEFT = 0,
     UP = 1,
     RIGHT = 2,
@@ -14,6 +17,16 @@ enum Direction {
     RIGHT_UP = 6,
     LEFT_DOWN = 7,
     RIGHT_DOWN = 8
+};
+
+enum Keys
+{
+    keyUp = 'i',
+    keyLeft = 'j',
+    keyDown = 'k',
+    keyRight = 'l',
+    keyDijkstraToggle = 'd',
+    keyQuit = 'q'
 };
 
 Direction& operator++(Direction& d);

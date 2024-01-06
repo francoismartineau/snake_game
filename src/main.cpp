@@ -15,13 +15,13 @@ void composeGraph(Graph &graph, const Wall &wall)
         {
             i = coordToIndex(x, y, wall.width);
             if (x > 0)
-                graph.ajouterArc(i, coordToIndex(x-1, y, wall.width), 1);
+                graph.addEdge(i, coordToIndex(x-1, y, wall.width), 1);
             if (x < wall.width - 1)
-                graph.ajouterArc(i, coordToIndex(x+1, y, wall.width), 1);
+                graph.addEdge(i, coordToIndex(x+1, y, wall.width), 1);
             if (y > 0)
-                graph.ajouterArc(i, coordToIndex(x, y-1, wall.width), 1);
+                graph.addEdge(i, coordToIndex(x, y-1, wall.width), 1);
             if (y < wall.height - 1)
-                graph.ajouterArc(i, coordToIndex(x, y+1, wall.width), 1);
+                graph.addEdge(i, coordToIndex(x, y+1, wall.width), 1);
         }
     }
 }

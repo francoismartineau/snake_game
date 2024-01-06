@@ -7,7 +7,7 @@ CXXFLAGS += -g
 SRCDIR = src
 OBJDIR = obj
 SRCS = define.cpp \
-	apple.cpp game.cpp gameDijkstra.cpp gameDraw.cpp graph.cpp main.cpp snake.cpp util.cpp wall.cpp
+	apple.cpp game.cpp gameDijkstra.cpp gameDraw.cpp graphDijkstra.cpp main.cpp snake.cpp util.cpp wall.cpp
 SRCS := $(addprefix $(SRCDIR)/, $(SRCS))
 OBJS = $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
 OUTDIR = bin

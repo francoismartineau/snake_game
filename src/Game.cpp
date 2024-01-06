@@ -17,14 +17,15 @@ Game::Game(Wall *wall, Snake *snake, Graph *graph)
     snake(snake),
     graph(graph),
     apple(new Apple),
+    drawToFile(false),
     fps(FPS),
+    dijkstraOn(true),
     speed(1),
     growSpeed(GROW_SPEED)
 {
     this->snake->reset(this->wall->width, this->wall->height);
     this->apple->place(this->wall, this->snake);
     gameChoice();
-    // userSnake();
 }
 
 void Game::gameChoice()
@@ -63,11 +64,13 @@ void Game::userSnake(bool survive)
 {
     Direction dir;
 
-
     while (true)
     {
         if(_kbhit())
-            dir = keyInput();
+        {
+            keyInput();
+            dir = this->inputDir;
+        }
         else
             dir = this->snake->dir;
         if (survive)
@@ -81,7 +84,7 @@ Direction Game::survive(Direction dir)
     static Direction prevSeenDir = NONE;
     static Direction prevDir = NONE;
 
-    std::vector<Direction> dirs = dirsAvailable();
+    std::vector<Direction> dirs = dirsAvailable(this->snake->getHeadPos());
     bool alreadySurvives = dirs.size() != 0
         && std::find(dirs.begin(), dirs.end(), dir) != dirs.end();
     if (!alreadySurvives)
@@ -90,7 +93,7 @@ Direction Game::survive(Direction dir)
             && std::find(dirs.begin(), dirs.end(), prevDir) != dirs.end();
         if (prevDirSurvives)
             dir = prevDir;
-        else
+        else if (dirs.size() != 0)
         {
             shuffleVector(dirs);
             dir = dirs[0];
@@ -166,7 +169,6 @@ void Game::tick()
 void Game::tick(Direction dir)
 {
     this->takeFrameTime();
-    // std::cout << "dir: " << dir << std::endl;
     this->snake->move(dir); 
     this->updateGraph();
     if (collision())
@@ -195,16 +197,17 @@ void Game::updateGraph()
         {
             pos.x = x;
             pos.y = y;
+            size_t index = posToIndex(pos, this->wall->width);
             if (this->snake->overlap(pos)
                 || this->wall->overlap(pos))
             {
                 this->removeArcsToNode(x, y);
-                this->graph->setIsOccupied(posToIndex(pos, this->wall->width), true);
+                this->graph->setIsOccupied(index, true);
             }   
             else
             {
                 this->addArcsToNode(x, y);
-                this->graph->setIsOccupied(posToIndex(pos, this->wall->width), false);
+                this->graph->setIsOccupied(index, false);
             }
         }
     }
@@ -227,7 +230,7 @@ void Game::addArcsToNode(size_t x, size_t y)
             adjacent_y = 0;
         size_t thisNode = coordToIndex(x, y, this->wall->width);
         size_t adjacentNode = coordToIndex(adjacent_x, adjacent_y, this->wall->width);
-        this->graph->ajouterArc(adjacentNode, thisNode, 1);
+        this->graph->addEdge(adjacentNode, thisNode, 1);
     }
 }
 
@@ -248,7 +251,7 @@ void Game::removeArcsToNode(size_t x, size_t y)
             adjacent_y = 0;
         size_t thisNode = coordToIndex(x, y, this->wall->width);
         size_t adjacentNode = coordToIndex(adjacent_x, adjacent_y, this->wall->width);
-        this->graph->enleverArc(adjacentNode, thisNode);
+        this->graph->removeEdge(adjacentNode, thisNode);
     }
 }
 
@@ -259,21 +262,32 @@ Game::~Game()
   delete this->snake;
 }
 
-Direction Game::keyInput()
+void Game::keyInput()
 {
     char current = _getch();
     switch (current)
     {
-    case 'i':
-        return UP;
-    case 'j':
-        return LEFT;
-    case 'k':
-        return DOWN;
-    case 'l':
-        return RIGHT;
+    case keyUp:
+        this->inputDir = UP;
+        break;
+    case keyLeft:
+        this->inputDir = LEFT;
+        break;
+    case keyDown:
+        this->inputDir = DOWN;
+        break;
+    case keyRight:
+        this->inputDir = RIGHT;
+        break;
+    case keyDijkstraToggle:
+        this->dijkstraOn = !this->dijkstraOn;
+        std::cout << "dijkstraOn: " << this->dijkstraOn << std::endl;
+        Sleep(1000);
+        break;
+    case keyQuit:
+        std::exit(0);
+        break;
     }
-    return NONE;
 }
 
 bool Game::collision()
@@ -293,9 +307,35 @@ void Game::collide()
 {
     std::cout << "Collision!" << std::endl
         << "press Enter..." << std::endl;
-    getchar();
-    // Sleep(COLLIDE_TIME * 1000);
+    waitForEnterKey();
     this->debug.on = false;
     this->snake->reset(this->wall->width, this->wall->height);
     this->apple->place(this->wall, this->snake);    
+}
+
+void Game::inspectWall(void)
+{
+    for (size_t i = 0; i < this->wall->getLength(); ++i)
+    {
+        Position pos = this->wall->getBlocPos(i);
+        this->debug.pos = pos;
+        this->debug.on = true;
+        std::cout << "Inspect wall" << std::endl;
+        this->draw();
+        waitForEnterKey();
+    }
+}
+
+void Game::inspectGraph(void)
+{
+    for (size_t i = 0; i < this-> wall->width * this->wall->height; ++i)
+    {
+        Position pos = indexToPos(i, this->wall->width);
+        this->debug.pos = pos;
+        this->debug.on = true;
+        this->draw();
+        this->updateGraph();
+        std::cout << "available dirs: " << this->dirsAvailable(pos) << std::endl;
+        waitForEnterKey();
+    }    
 }
