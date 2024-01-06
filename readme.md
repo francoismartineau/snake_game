@@ -1,4 +1,4 @@
-This is a snake game projected to the console. 
+#This is a snake game projected to the console. 
 
 
  The snake follows a fixed path that maximizes its length, at the cost of being slow.
