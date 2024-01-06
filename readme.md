@@ -29,4 +29,4 @@ A user started playing in invicible mode and stopped when this loop emerged from
 ![user-invicible](https://i.postimg.cc/rF7xN6qS/user-invicible.gif)
 
 
-For further details about my dijkstra implementation see my [report in french](https://docs.google.com/document/d/1tVqNiSNAh0G4h7_7KM4GMVgTxKbfcze4Tr1mpQ7nciI/edit?usp=sharing) that I produced for the course Algorithms and data structures at Université Laval. I finished it with a 95% grade.
+For further details about my dijkstra implementation see my [report in french](https://docs.google.com/document/d/1tVqNiSNAh0G4h7_7KM4GMVgTxKbfcze4Tr1mpQ7nciI/edit?usp=sharing) that I produced for the course Algorithms and data structures at Université Laval. I finished the course with a 95% grade.
