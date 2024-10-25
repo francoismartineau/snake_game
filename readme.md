@@ -10,7 +10,7 @@ The bot always takes the shortest path. Of course, the snake will sometimes trap
 ![infinite-game](https://i.postimg.cc/HnZ7v0MQ/infinite-game.gif)
 
 
-Now it takes the shortest path using Dijkstra. The sides that are not blocked by walls teleport the snake Pac-man style.
+Now it takes the shortest path using the Dijkstra algorithm. The snake teleports Pac-man style through the sides that are not blocked by walls.
 
 ![dijkstra](https://i.postimg.cc/fydYXKPj/dijkstra.gif)
 
