@@ -29,4 +29,4 @@ The invicible mode lets the user control the snake, but iminent crashes that can
 ![user-invicible](https://i.postimg.cc/rF7xN6qS/user-invicible.gif)
 
 
-During my studies at Université Laval, I had to modify a naïve Dijkstra implementation and improve it significantly. My strategy had a complexity of O(u+n) where n is the number of locations and u is the number of possible distances. For further details, see my [report in french](https://docs.google.com/document/d/1tVqNiSNAh0G4h7_7KM4GMVgTxKbfcze4Tr1mpQ7nciI/edit?usp=sharing) produced during this course.
+During my studies at Université Laval, I had to modify a naïve Dijkstra implementation and improve it significantly. My strategy had a complexity of O(u+n) where n is the number of locations and u is the number of possible distances. For further details, see my [report in french](https://docs.google.com/document/d/1tVqNiSNAh0G4h7_7KM4GMVgTxKbfcze4Tr1mpQ7nciI/edit?usp=sharing) produced during this course. I reused that implementation in this game.
